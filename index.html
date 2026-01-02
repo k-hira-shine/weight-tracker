@@ -26,8 +26,179 @@
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             font-size: 24px;
+        }
+
+        /* ストリークセクション */
+        .streak-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .streak-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .streak-count {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .streak-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .streak-best {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        /* バッジセクション */
+        .badges-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .badges-section h2 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 5px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .badge.unlocked {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+        }
+
+        .badge.unlocked:hover {
+            transform: scale(1.05);
+        }
+
+        .badge.locked {
+            opacity: 0.4;
+            filter: grayscale(100%);
+        }
+
+        .badge-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .badge-name {
+            font-size: 10px;
+            color: #666;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .badge.unlocked .badge-name {
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* 新規バッジ獲得通知 */
+        .badge-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 2000;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .badge-notification.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .badge-notification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .badge-notification-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .badge-notification-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            animation: bounce 0.5s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .badge-notification-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .badge-notification-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .badge-notification-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .badge-notification button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         .input-section {
@@ -94,10 +265,15 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
+            transition: background-color 0.2s;
         }
 
         button:hover {
             background-color: #3a7bc8;
+        }
+
+        button:active {
+            transform: scale(0.98);
         }
 
         .history-section {
@@ -249,11 +425,65 @@
         .cancel-btn:hover {
             background-color: #7f8c8d;
         }
+
+        /* バッジ詳細モーダル */
+        .badge-detail-modal .modal-content {
+            text-align: center;
+        }
+
+        .badge-detail-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .badge-detail-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .badge-detail-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .badge-detail-status {
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .badge-detail-status.unlocked {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-detail-status.locked {
+            background: #f8f9fa;
+            color: #666;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>体重記録</h1>
+
+        <!-- ストリーク表示 -->
+        <div class="streak-section">
+            <div class="streak-icon" id="streakIcon">🔥</div>
+            <div class="streak-count" id="streakCount">0</div>
+            <div class="streak-label">日連続記録中</div>
+            <div class="streak-best" id="streakBest">最長記録: 0日</div>
+        </div>
+
+        <!-- バッジ表示 -->
+        <div class="badges-section">
+            <h2>🏆 実績</h2>
+            <div class="badges-grid" id="badgesGrid"></div>
+        </div>
 
         <div class="input-section">
             <div class="input-row">
@@ -289,8 +519,250 @@
         </div>
     </div>
 
+    <!-- バッジ詳細モーダル -->
+    <div class="modal badge-detail-modal" id="badgeDetailModal">
+        <div class="modal-content">
+            <div class="badge-detail-icon" id="badgeDetailIcon"></div>
+            <div class="badge-detail-name" id="badgeDetailName"></div>
+            <div class="badge-detail-desc" id="badgeDetailDesc"></div>
+            <div class="badge-detail-status" id="badgeDetailStatus"></div>
+            <div class="modal-buttons">
+                <button onclick="closeBadgeDetail()">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- バッジ獲得通知 -->
+    <div class="badge-notification-overlay" id="badgeNotificationOverlay"></div>
+    <div class="badge-notification" id="badgeNotification">
+        <div class="badge-notification-icon" id="notificationIcon"></div>
+        <div class="badge-notification-title">バッジ獲得！</div>
+        <div class="badge-notification-name" id="notificationName"></div>
+        <div class="badge-notification-desc" id="notificationDesc"></div>
+        <button onclick="closeBadgeNotification()">やったー！</button>
+    </div>
+
     <script>
         let editingId = null;
+
+        // バッジ定義
+        const BADGES = [
+            { id: 'first_record', icon: '🌱', name: 'はじめの一歩', desc: '初めて体重を記録した', check: (stats) => stats.totalRecords >= 1 },
+            { id: 'week_streak', icon: '📅', name: '1週間継続', desc: '7日連続で記録した', check: (stats) => stats.currentStreak >= 7 },
+            { id: 'month_streak', icon: '🗓️', name: '1ヶ月継続', desc: '30日連続で記録した', check: (stats) => stats.currentStreak >= 30 },
+            { id: 'records_10', icon: '📝', name: '記録の習慣', desc: '10回記録した', check: (stats) => stats.totalRecords >= 10 },
+            { id: 'records_50', icon: '📊', name: 'データマニア', desc: '50回記録した', check: (stats) => stats.totalRecords >= 50 },
+            { id: 'records_100', icon: '🏅', name: '記録の達人', desc: '100回記録した', check: (stats) => stats.totalRecords >= 100 },
+            { id: 'loss_1kg', icon: '🏃', name: '1kg減量', desc: '開始時から1kg減った', check: (stats) => stats.totalLoss >= 1 },
+            { id: 'loss_3kg', icon: '🎯', name: '3kg減量', desc: '開始時から3kg減った', check: (stats) => stats.totalLoss >= 3 },
+            { id: 'loss_5kg', icon: '🏆', name: '5kg減量', desc: '開始時から5kg減った', check: (stats) => stats.totalLoss >= 5 },
+            { id: 'morning', icon: '🌅', name: '朝型記録者', desc: '7時前に5回記録した', check: (stats) => stats.morningRecords >= 5 },
+            { id: 'night', icon: '🌙', name: '夜型記録者', desc: '22時以降に5回記録した', check: (stats) => stats.nightRecords >= 5 },
+            { id: 'comeback', icon: '💪', name: 'カムバック', desc: 'ストリークが途切れた後に再開した', check: (stats) => stats.comebacks >= 1 },
+        ];
+
+        // ゲームデータを取得
+        function getGameData() {
+            const data = localStorage.getItem('weightGameData');
+            return data ? JSON.parse(data) : {
+                unlockedBadges: [],
+                bestStreak: 0,
+                lastRecordDate: null,
+                comebacks: 0
+            };
+        }
+
+        // ゲームデータを保存
+        function saveGameData(data) {
+            localStorage.setItem('weightGameData', JSON.stringify(data));
+        }
+
+        // 統計情報を計算
+        function calculateStats() {
+            const history = getHistory();
+            const gameData = getGameData();
+
+            if (history.length === 0) {
+                return {
+                    totalRecords: 0,
+                    currentStreak: 0,
+                    totalLoss: 0,
+                    morningRecords: 0,
+                    nightRecords: 0,
+                    comebacks: gameData.comebacks
+                };
+            }
+
+            // 記録日をユニークに取得（日付のみ）
+            const recordDates = [...new Set(history.map(r => {
+                const d = new Date(r.date);
+                return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+            }))].sort().reverse();
+
+            // 連続記録日数を計算
+            let currentStreak = 0;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            for (let i = 0; i < recordDates.length; i++) {
+                const parts = recordDates[i].split('-');
+                const recordDate = new Date(parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]));
+                recordDate.setHours(0, 0, 0, 0);
+
+                const expectedDate = new Date(today);
+                expectedDate.setDate(expectedDate.getDate() - i);
+                expectedDate.setHours(0, 0, 0, 0);
+
+                // 今日または昨日から始まるストリークをチェック
+                if (i === 0) {
+                    const diffFromToday = Math.floor((today - recordDate) / (1000 * 60 * 60 * 24));
+                    if (diffFromToday > 1) {
+                        break; // 昨日より前なのでストリークなし
+                    }
+                    if (diffFromToday === 1) {
+                        // 昨日の記録から始まる場合、expectedDateを昨日に設定
+                        expectedDate.setDate(expectedDate.getDate() - 1);
+                    }
+                }
+
+                const diff = Math.abs(recordDate - expectedDate);
+                if (diff < 1000 * 60 * 60 * 24) { // 1日以内の誤差
+                    currentStreak++;
+                } else {
+                    break;
+                }
+            }
+
+            // 減量計算（最初の記録と最新の記録を比較）
+            const sortedByDate = [...history].sort((a, b) => new Date(a.date) - new Date(b.date));
+            const firstWeight = sortedByDate[0].weight;
+            const latestWeight = sortedByDate[sortedByDate.length - 1].weight;
+            const totalLoss = firstWeight - latestWeight;
+
+            // 朝・夜の記録数
+            let morningRecords = 0;
+            let nightRecords = 0;
+            history.forEach(r => {
+                const hour = new Date(r.date).getHours();
+                if (hour < 7) morningRecords++;
+                if (hour >= 22) nightRecords++;
+            });
+
+            return {
+                totalRecords: history.length,
+                currentStreak,
+                totalLoss,
+                morningRecords,
+                nightRecords,
+                comebacks: gameData.comebacks
+            };
+        }
+
+        // ストリーク表示を更新
+        function updateStreakDisplay() {
+            const stats = calculateStats();
+            const gameData = getGameData();
+
+            document.getElementById('streakCount').textContent = stats.currentStreak;
+            document.getElementById('streakBest').textContent = `最長記録: ${gameData.bestStreak}日`;
+
+            // ストリークに応じてアイコンを変更
+            const streakIcon = document.getElementById('streakIcon');
+            if (stats.currentStreak >= 30) {
+                streakIcon.textContent = '🌟';
+            } else if (stats.currentStreak >= 14) {
+                streakIcon.textContent = '⭐';
+            } else if (stats.currentStreak >= 7) {
+                streakIcon.textContent = '🔥';
+            } else if (stats.currentStreak >= 3) {
+                streakIcon.textContent = '✨';
+            } else if (stats.currentStreak >= 1) {
+                streakIcon.textContent = '💫';
+            } else {
+                streakIcon.textContent = '😴';
+            }
+
+            // 最長記録を更新
+            if (stats.currentStreak > gameData.bestStreak) {
+                gameData.bestStreak = stats.currentStreak;
+                saveGameData(gameData);
+                document.getElementById('streakBest').textContent = `最長記録: ${gameData.bestStreak}日`;
+            }
+        }
+
+        // バッジ表示を更新
+        function updateBadgesDisplay() {
+            const gameData = getGameData();
+            const grid = document.getElementById('badgesGrid');
+
+            grid.innerHTML = BADGES.map(badge => {
+                const isUnlocked = gameData.unlockedBadges.includes(badge.id);
+                return `
+                    <div class="badge ${isUnlocked ? 'unlocked' : 'locked'}" onclick="showBadgeDetail('${badge.id}')">
+                        <span class="badge-icon">${badge.icon}</span>
+                        <span class="badge-name">${badge.name}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // バッジ獲得チェック
+        function checkBadges() {
+            const stats = calculateStats();
+            const gameData = getGameData();
+            const newBadges = [];
+
+            BADGES.forEach(badge => {
+                if (!gameData.unlockedBadges.includes(badge.id) && badge.check(stats)) {
+                    gameData.unlockedBadges.push(badge.id);
+                    newBadges.push(badge);
+                }
+            });
+
+            if (newBadges.length > 0) {
+                saveGameData(gameData);
+                updateBadgesDisplay();
+                // 最初の新しいバッジを表示
+                showBadgeNotification(newBadges[0]);
+            }
+        }
+
+        // バッジ獲得通知を表示
+        function showBadgeNotification(badge) {
+            document.getElementById('notificationIcon').textContent = badge.icon;
+            document.getElementById('notificationName').textContent = badge.name;
+            document.getElementById('notificationDesc').textContent = badge.desc;
+            document.getElementById('badgeNotificationOverlay').classList.add('show');
+            document.getElementById('badgeNotification').classList.add('show');
+        }
+
+        // バッジ獲得通知を閉じる
+        function closeBadgeNotification() {
+            document.getElementById('badgeNotificationOverlay').classList.remove('show');
+            document.getElementById('badgeNotification').classList.remove('show');
+        }
+
+        // バッジ詳細を表示
+        function showBadgeDetail(badgeId) {
+            const badge = BADGES.find(b => b.id === badgeId);
+            const gameData = getGameData();
+            const isUnlocked = gameData.unlockedBadges.includes(badgeId);
+
+            document.getElementById('badgeDetailIcon').textContent = badge.icon;
+            document.getElementById('badgeDetailName').textContent = badge.name;
+            document.getElementById('badgeDetailDesc').textContent = badge.desc;
+
+            const statusEl = document.getElementById('badgeDetailStatus');
+            statusEl.textContent = isUnlocked ? '✓ 獲得済み' : '🔒 未獲得';
+            statusEl.className = `badge-detail-status ${isUnlocked ? 'unlocked' : 'locked'}`;
+
+            document.getElementById('badgeDetailModal').classList.add('show');
+        }
+
+        // バッジ詳細を閉じる
+        function closeBadgeDetail() {
+            document.getElementById('badgeDetailModal').classList.remove('show');
+        }
 
         // 現在の日時をセット
         function setCurrentDateTime() {
@@ -335,6 +807,11 @@
                 return;
             }
 
+            // ストリーク途切れチェック（カムバック判定用）
+            const gameData = getGameData();
+            const stats = calculateStats();
+            const wasStreakBroken = stats.currentStreak === 0 && gameData.lastRecordDate !== null;
+
             const dateTime = new Date(`${dateInput.value}T${timeInput.value}`);
 
             const history = getHistory();
@@ -346,9 +823,19 @@
 
             history.push(record);
             saveHistory(sortHistory(history));
+
+            // カムバック判定
+            if (wasStreakBroken) {
+                gameData.comebacks++;
+            }
+            gameData.lastRecordDate = dateTime.toISOString();
+            saveGameData(gameData);
+
             weightInput.value = '';
             setCurrentDateTime();
             renderHistory();
+            updateStreakDisplay();
+            checkBadges();
         }
 
         // 記録を削除
@@ -359,6 +846,7 @@
             const newHistory = history.filter(record => record.id !== id);
             saveHistory(newHistory);
             renderHistory();
+            updateStreakDisplay();
         }
 
         // 編集モーダルを開く
@@ -415,6 +903,8 @@
             saveHistory(sortHistory(history));
             closeModal();
             renderHistory();
+            updateStreakDisplay();
+            checkBadges();
         }
 
         // 日付をフォーマット
@@ -464,6 +954,8 @@
         // 初期化
         setCurrentDateTime();
         renderHistory();
+        updateStreakDisplay();
+        updateBadgesDisplay();
     </script>
 </body>
 </html>

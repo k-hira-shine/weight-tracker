@@ -281,6 +281,7 @@
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
 
         .history-section h2 {
@@ -471,20 +472,7 @@
     <div class="container">
         <h1>体重記録</h1>
 
-        <!-- ストリーク表示 -->
-        <div class="streak-section">
-            <div class="streak-icon" id="streakIcon">🔥</div>
-            <div class="streak-count" id="streakCount">0</div>
-            <div class="streak-label">日連続記録中</div>
-            <div class="streak-best" id="streakBest">最長記録: 0日</div>
-        </div>
-
-        <!-- バッジ表示 -->
-        <div class="badges-section">
-            <h2>🏆 実績</h2>
-            <div class="badges-grid" id="badgesGrid"></div>
-        </div>
-
+        <!-- 1. 記録する（一番上） -->
         <div class="input-section">
             <div class="input-row">
                 <input type="date" id="dateInput" class="date-input">
@@ -497,11 +485,26 @@
             <button onclick="saveWeight()">記録する</button>
         </div>
 
+        <!-- 2. 履歴 -->
         <div class="history-section">
             <h2>履歴</h2>
             <ul class="history-list" id="historyList">
                 <li class="empty-message">まだ記録がありません</li>
             </ul>
+        </div>
+
+        <!-- 3. 連続記録ストリーク -->
+        <div class="streak-section">
+            <div class="streak-icon" id="streakIcon">🔥</div>
+            <div class="streak-count" id="streakCount">0</div>
+            <div class="streak-label">日連続記録中</div>
+            <div class="streak-best" id="streakBest">最長記録: 0日</div>
+        </div>
+
+        <!-- 4. 実績バッジ -->
+        <div class="badges-section">
+            <h2>🏆 実績</h2>
+            <div class="badges-grid" id="badgesGrid"></div>
         </div>
     </div>
 

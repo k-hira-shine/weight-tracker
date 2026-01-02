@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>体重記録</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .input-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .date-input, .time-input {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .date-input:focus, .time-input:focus {
+            border-color: #4a90d9;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        input[type="number"]:focus {
+            border-color: #4a90d9;
+        }
+
+        .unit {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            color: #666;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #4a90d9;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #3a7bc8;
+        }
+
+        .history-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .history-section h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .history-list {
+            list-style: none;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-date {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .history-weight {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 5px;
+        }
+
+        .edit-btn, .delete-btn {
+            width: auto;
+            padding: 5px 10px;
+            margin-top: 0;
+            font-size: 12px;
+        }
+
+        .edit-btn {
+            background-color: #f39c12;
+        }
+
+        .edit-btn:hover {
+            background-color: #d68910;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+        }
+
+        .diff {
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .diff.up {
+            color: #e74c3c;
+        }
+
+        .diff.down {
+            color: #27ae60;
+        }
+
+        /* 編集モーダル */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 350px;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .modal-input:focus {
+            border-color: #4a90d9;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            margin-top: 10px;
+        }
+
+        .cancel-btn {
+            background-color: #95a5a6;
+        }
+
+        .cancel-btn:hover {
+            background-color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>体重記録</h1>
+
+        <div class="input-section">
+            <div class="input-row">
+                <input type="date" id="dateInput" class="date-input">
+                <input type="time" id="timeInput" class="time-input">
+            </div>
+            <div class="input-group">
+                <input type="number" id="weightInput" step="0.1" placeholder="65.0">
+                <span class="unit">kg</span>
+            </div>
+            <button onclick="saveWeight()">記録する</button>
+        </div>
+
+        <div class="history-section">
+            <h2>履歴</h2>
+            <ul class="history-list" id="historyList">
+                <li class="empty-message">まだ記録がありません</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 編集モーダル -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h3>記録を編集</h3>
+            <input type="date" id="editDate" class="modal-input">
+            <input type="time" id="editTime" class="modal-input">
+            <input type="number" id="editWeight" class="modal-input" step="0.1" placeholder="体重">
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeModal()">キャンセル</button>
+                <button onclick="updateRecord()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let editingId = null;
+
+        // 現在の日時をセット
+        function setCurrentDateTime() {
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const timeStr = now.toTimeString().slice(0, 5);
+            document.getElementById('dateInput').value = dateStr;
+            document.getElementById('timeInput').value = timeStr;
+        }
+
+        // ローカルストレージから履歴を取得
+        function getHistory() {
+            const data = localStorage.getItem('weightHistory');
+            return data ? JSON.parse(data) : [];
+        }
+
+        // ローカルストレージに履歴を保存
+        function saveHistory(history) {
+            localStorage.setItem('weightHistory', JSON.stringify(history));
+        }
+
+        // 履歴を日付順にソート（新しい順）
+        function sortHistory(history) {
+            return history.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+
+        // 体重を保存
+        function saveWeight() {
+            const dateInput = document.getElementById('dateInput');
+            const timeInput = document.getElementById('timeInput');
+            const weightInput = document.getElementById('weightInput');
+
+            const weight = parseFloat(weightInput.value);
+
+            if (isNaN(weight) || weight <= 0) {
+                alert('正しい体重を入力してください');
+                return;
+            }
+
+            if (!dateInput.value || !timeInput.value) {
+                alert('日付と時刻を入力してください');
+                return;
+            }
+
+            const dateTime = new Date(`${dateInput.value}T${timeInput.value}`);
+
+            const history = getHistory();
+            const record = {
+                id: Date.now(),
+                weight: weight,
+                date: dateTime.toISOString()
+            };
+
+            history.push(record);
+            saveHistory(sortHistory(history));
+            weightInput.value = '';
+            setCurrentDateTime();
+            renderHistory();
+        }
+
+        // 記録を削除
+        function deleteRecord(id) {
+            if (!confirm('この記録を削除しますか？')) return;
+
+            const history = getHistory();
+            const newHistory = history.filter(record => record.id !== id);
+            saveHistory(newHistory);
+            renderHistory();
+        }
+
+        // 編集モーダルを開く
+        function openEditModal(id) {
+            const history = getHistory();
+            const record = history.find(r => r.id === id);
+            if (!record) return;
+
+            editingId = id;
+            const date = new Date(record.date);
+
+            document.getElementById('editDate').value = date.toISOString().split('T')[0];
+            document.getElementById('editTime').value = date.toTimeString().slice(0, 5);
+            document.getElementById('editWeight').value = record.weight;
+
+            document.getElementById('editModal').classList.add('show');
+        }
+
+        // モーダルを閉じる
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('show');
+            editingId = null;
+        }
+
+        // 記録を更新
+        function updateRecord() {
+            if (!editingId) return;
+
+            const dateInput = document.getElementById('editDate');
+            const timeInput = document.getElementById('editTime');
+            const weightInput = document.getElementById('editWeight');
+
+            const weight = parseFloat(weightInput.value);
+
+            if (isNaN(weight) || weight <= 0) {
+                alert('正しい体重を入力してください');
+                return;
+            }
+
+            if (!dateInput.value || !timeInput.value) {
+                alert('日付と時刻を入力してください');
+                return;
+            }
+
+            const dateTime = new Date(`${dateInput.value}T${timeInput.value}`);
+
+            const history = getHistory();
+            const index = history.findIndex(r => r.id === editingId);
+            if (index === -1) return;
+
+            history[index].weight = weight;
+            history[index].date = dateTime.toISOString();
+
+            saveHistory(sortHistory(history));
+            closeModal();
+            renderHistory();
+        }
+
+        // 日付をフォーマット
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${month}/${day} ${hours}:${minutes}`;
+        }
+
+        // 履歴を表示
+        function renderHistory() {
+            const history = getHistory();
+            const list = document.getElementById('historyList');
+
+            if (history.length === 0) {
+                list.innerHTML = '<li class="empty-message">まだ記録がありません</li>';
+                return;
+            }
+
+            list.innerHTML = history.map((record, index) => {
+                let diffHtml = '';
+                if (index < history.length - 1) {
+                    const diff = record.weight - history[index + 1].weight;
+                    if (diff !== 0) {
+                        const sign = diff > 0 ? '+' : '';
+                        const className = diff > 0 ? 'up' : 'down';
+                        diffHtml = `<span class="diff ${className}">${sign}${diff.toFixed(1)}</span>`;
+                    }
+                }
+
+                return `
+                    <li class="history-item">
+                        <span class="history-date">${formatDate(record.date)}</span>
+                        <span class="history-weight">${record.weight.toFixed(1)} kg${diffHtml}</span>
+                        <div class="btn-group">
+                            <button class="edit-btn" onclick="openEditModal(${record.id})">編集</button>
+                            <button class="delete-btn" onclick="deleteRecord(${record.id})">削除</button>
+                        </div>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        // 初期化
+        setCurrentDateTime();
+        renderHistory();
+    </script>
+</body>
+</html>
